@@ -1,13 +1,23 @@
 {
-  "name": "node-cli",
+  "name": "@ifycode/create-project",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A nodejs CLI from twilio youtube tutorial",
+  "main": "src/index.js",
+  "bin": {
+    "@ifycode/create-project": "bin/create-project",
+    "create-project": "bin/create-project"
+  },
+  "publicConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "cli",
+    "create-project"
+  ],
+  "author": "Brent Schooley",
   "license": "ISC",
   "dependencies": {
     "esm": "^3.2.25"
