@@ -20,8 +20,9 @@ export async function createProject(options) {
     };
 
     const currentFileUrl = import.meta.url;
+
     const templateDir = path.resolve(
-        new URL(currentFileUrl).pathname, 
+        new URL(currentFileUrl).pathname.substring(new URL(currentFileUrl).pathname.indexOf('/') + 1), 
         '../../templates',
         options.template.toLowerCase()
     );
@@ -41,3 +42,13 @@ export async function createProject(options) {
     console.log('%s Project ready', chalk.green.bold('DONE'));
     return true;
 }
+
+/*
+this doesn't work:
+
+const templateDir = path.resolve(
+    new URL(currentFileUrl).pathname, 
+    '../../templates',
+    options.template.toLowerCase()
+);
+*/
