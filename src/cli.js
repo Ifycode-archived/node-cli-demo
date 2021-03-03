@@ -1,6 +1,7 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
 import { createProject } from './main';
+import { initGit } from './main';
 
 function parseArgumentsIntoOptions(rawArgs) {
     const args = arg({
@@ -67,6 +68,7 @@ export async function cli(args) {
     //console.log(options);
     try {
         await createProject(options);
+        await initGit(options);
     } catch (err) {
         console.log('Error | ', err);
     }   
