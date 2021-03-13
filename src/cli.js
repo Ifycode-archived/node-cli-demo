@@ -1,6 +1,6 @@
 import arg from 'arg';
-/*
 import inquirer from 'inquirer';
+/*
 import { createProject } from './main';
 import { initGit } from './main';
 */
@@ -25,22 +25,34 @@ function parseArgumentsIntoOptions(rawArgs) {
         git: args['--git'] || false,
         folderName: args._[0],
         template: args._[1],
-        runInstall: args['--install'] || false,
+        runInstall: args['--install'] || true, //set to true as default, so that --skip-install can be used instead.
         skipInstall: args['--skip-install'] || false
     }
 }
 
-/*
 async function promptForMissingOptions(options) {
-    const defaultTemplate = 'Javascript';
+    const [defaultFolderName, defaultTemplate] = ['node-mongo-starter-kit', 'Javascript'];
+    
     if (options.skipPrompts) {
         return {
             ...options,
-            template: options.template || defaultTemplate
+            folderName: options.folderName || defaultFolderName,
+            template: options.template || defaultTemplate,
+            runInstall: options.runInstall
         }
     }
 
-    const questions = [];  
+    const questions = []; 
+
+    if (!options.folderName) {
+        questions.push({
+            type: 'input',
+            name: 'folderName',
+            message: 'Please enter folder name:',
+            default: defaultFolderName
+        });
+    }
+    
     if (!options.template) {
         questions.push({
             type: 'list',
@@ -64,14 +76,16 @@ async function promptForMissingOptions(options) {
 
     return {
         ...options,
+        folderName: options.folderName || answers.folderName,
         template: options.template || answers.template,
         git: options.git || answers.git
     }
-}*/
+    
+}
 
 export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
-    //options = await promptForMissingOptions(options);
+    options = await promptForMissingOptions(options);
     console.log(options);
     /*try {
         await createProject(options);
