@@ -39,7 +39,7 @@ async function promptForMissingOptions(options) {
             ...options,
             folderName: options.folderName || defaultFolderName,
             template: options.template || defaultTemplate,
-            runInstall: options.runInstall
+            runInstall: options.runInstall || true
         }
     }
 
