@@ -1,5 +1,6 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
+import chalk from 'chalk';
 /*
 import { createProject } from './main';
 import { initGit } from './main';
@@ -52,15 +53,24 @@ async function promptForMissingOptions(options) {
             default: defaultFolderName
         });
     }
-    
-    if (!options.template) {
+
+    const templateCollection = ['Javascript', 'Typescript'];
+    const equalToAtLeastOneTemplate = templateCollection.some(tc => { 
+        return tc === options.template
+    });
+
+    if (!options.template || equalToAtLeastOneTemplate === false) {
         questions.push({
             type: 'list',
             name: 'template',
             message: 'Please choose which project template to use',
-            choices: ['Javascript', 'Typescript'],
+            choices: templateCollection,
             default: defaultTemplate
         });
+    }
+
+    if (equalToAtLeastOneTemplate === false && options.template !== undefined) {
+        console.log( chalk.cyanBright(`Cli does not have template: "${options.template}" in it's template collection`) );
     }
 
     if (!options.git) {
@@ -74,13 +84,21 @@ async function promptForMissingOptions(options) {
 
     const answers = await inquirer.prompt(questions);
 
+    if (equalToAtLeastOneTemplate === false) {
+        return {
+            ...options,
+            folderName: options.folderName || answers.folderName,
+            template: answers.template, //otherwise it will return user's entry (options.template) which we don't want in this case
+            git: options.git || answers.git
+        }
+    }
+
     return {
         ...options,
         folderName: options.folderName || answers.folderName,
         template: options.template || answers.template,
         git: options.git || answers.git
     }
-    
 }
 
 export async function cli(args) {
