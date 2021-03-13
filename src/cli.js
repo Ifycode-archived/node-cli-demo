@@ -1,29 +1,36 @@
 import arg from 'arg';
+/*
 import inquirer from 'inquirer';
 import { createProject } from './main';
 import { initGit } from './main';
+*/
 
 function parseArgumentsIntoOptions(rawArgs) {
     const args = arg({
         '--git': Boolean,
         '--yes': Boolean,
         '--install': Boolean,
+        '--skip-install': Boolean,
         '-g': '--git',
         '-y': '--yes',
-        '-i': '--install'
+        '-i': '--install',
+        '-s': '--skip-install'
     }, 
     {
-       argv: rawArgs.slice(2) 
+       argv: rawArgs.slice(2),
     });
 
     return {
         skipPrompts: args['--yes'] || false,
         git: args['--git'] || false,
-        template: args._[0],
-        runInstall: args['--install'] || false
+        folderName: args._[0],
+        template: args._[1],
+        runInstall: args['--install'] || false,
+        skipInstall: args['--skip-install'] || false
     }
 }
 
+/*
 async function promptForMissingOptions(options) {
     const defaultTemplate = 'Javascript';
     if (options.skipPrompts) {
@@ -60,16 +67,16 @@ async function promptForMissingOptions(options) {
         template: options.template || answers.template,
         git: options.git || answers.git
     }
-}
+}*/
 
 export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
-    options = await promptForMissingOptions(options);
-    //console.log(options);
-    try {
+    //options = await promptForMissingOptions(options);
+    console.log(options);
+    /*try {
         await createProject(options);
-        await initGit(options);
+        //await initGit(options);
     } catch (err) {
         console.log('Error | ', err);
-    }   
+    }*/   
 }
