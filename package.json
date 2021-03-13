@@ -1,11 +1,11 @@
 {
-  "name": "@ifycode/create-project",
+  "name": "@ifycode/node-cli-demo",
   "version": "1.0.0",
   "description": "A nodejs CLI from twilio youtube tutorial",
   "main": "src/index.js",
   "bin": {
-    "@ifycode/create-project": "bin/create-project",
-    "create-project": "bin/create-project"
+    "@ifycode/node-cli-demo": "bin/create-node-mongo-project",
+    "create-project": "bin/create-node-mongo-project"
   },
   "publicConfig": {
     "access": "public"
