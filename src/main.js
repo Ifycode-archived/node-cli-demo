@@ -1,4 +1,4 @@
-/*import chalk from 'chalk';
+import chalk from 'chalk';
 import fs from 'fs';
 import ncp from 'ncp';
 import path from 'path';
@@ -17,24 +17,33 @@ async function copyTemplateFiles(options) {
 }
 
 export async function initGit(options) {
-    //console.log(options);
-    const result = await execa('git', ['init'], {
-        cwd: options.targetDirectory
-    });
+    if (options.git) { //initialize git only if git returns true
+        const result = await execa('git', ['init'], {
+            cwd: options.targetDirectory
+        });
 
-    if (result.failed) {
-        return Promise.reject(new Error('Failed to initialize git'));
+        if (result.failed) {
+            return Promise.reject(new Error('Failed to initialize git'));
+        }
     }
 
     return;
 }
 
 export async function createProject(options) {
+    
     options = {
         ...options,
-        targetDirectory: options.targetDirectory || process.cwd()
+        targetDirectory: options.targetDirectory || process.cwd() //root/parent folder at this point
     };
 
+    //create folder with user input here...
+    fs.mkdirSync(`./${options.folderName}`, { recursive: true });
+    
+    //change directory from root/parent folder into user's own folder (so that it becomes cwd)
+    process.chdir(`./${options.folderName}`);
+    options.targetDirectory = process.cwd();
+    
     const currentFileUrl = import.meta.url;
 
     const templateDir = path.resolve(
@@ -60,29 +69,31 @@ export async function createProject(options) {
         {
             title: 'Initialize git',
             task: () => initGit(options),
-            enabled: () => options.git
+            skip: () => !options.git ? 'Automatically initialize git by doing nothing. Alternatively, pass --git or -g' : undefined
         },
         {
             title: 'Install dependencies',
             task: () => projectInstall({
                 cwd: options.targetDirectory
             }),
-            skip: () => !options.runInstall ? 'Pass --install to automatically install dependencies' : undefined
+            skip: () => !options.runInstall ? 'Automatically install dependencies by doing nothing. Alternatively, pass --install or -i' : undefined
         }
     ]);
 
     await tasks.run();
 
-    console.log('%s Project ready', chalk.green.bold('DONE'));
+    console.log(`%s Project bootstrapped into the folder you specified => ${options.folderName} <=`, chalk.green.bold('DONE'));
     return true;
-}*/
+}
 
 /*
-this doesn't work:
+//new note:
 
-const templateDir = path.resolve(
-    new URL(currentFileUrl).pathname, 
-    '../../templates',
-    options.template.toLowerCase()
-);
+Removed the enabled code below since we have no need of prompt 
+for git again due to introduction of --skip-git command argument
+
+enabled: () => options.git, 
+
+Therefore used skip instead like in the install case:
+ skip: () => !options.git ? 'Automatically initialize git by doing nothing. Alternatively, pass --git or -g' : undefined
 */
